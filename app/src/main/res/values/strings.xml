@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">Almond-Detector</string>
+    <string name="app_name">Mandel-Detector</string>
+    <string name="actoinmenu"></string>
 </resources>

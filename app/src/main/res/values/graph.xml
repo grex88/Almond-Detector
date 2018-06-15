@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="frozen_almond">
+        <item>Frozen</item>
+        <item>file:///android_asset/frozen_inference_graph.pb</item>
+    </string-array>
+</resources>
