@@ -23,5 +23,29 @@
         android:layout_alignParentEnd="true"
         android:layout_marginBottom="18dp"
         android:onClick="openGalery"
-        android:text="Gallerie" />
+        android:text="@string/gallery_button"
+        android:layout_above="@id/myPhotoView"/>
+
+    <TextView
+        android:id="@+id/myUnpeeledTextView"
+        android:layout_width="148dp"
+        android:layout_height="33dp"
+        android:layout_above="@id/myPhotoView"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/myPeeledTextView"
+        android:layout_marginBottom="-431dp"
+        android:layout_marginTop="-114dp"
+        android:background="@android:color/holo_blue_bright"
+        android:text="@string/unpeeled_text_view" />
+
+    <TextView
+        android:id="@+id/myPeeledTextView"
+        android:layout_width="148dp"
+        android:layout_height="32dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="118dp"
+        android:background="@android:color/holo_blue_bright"
+        android:text="@string/peeled_text_view" />
+
 </RelativeLayout>

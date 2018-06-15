@@ -3,6 +3,10 @@ package greg.android.computervision.almonddetector;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.RectF;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
@@ -13,9 +17,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -26,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Button openGalleryButton;
     private ImageView photoView;
+    private TextView peeledTextView, unpeeledTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
 
         openGalleryButton = findViewById(R.id.myGalleryButton);
         photoView = findViewById(R.id.myPhotoView);
+        peeledTextView = findViewById(R.id.myPeeledTextView);
+        unpeeledTextView = findViewById(R.id.myUnpeeledTextView);
 
         setModel();
 
@@ -89,13 +98,51 @@ public class MainActivity extends AppCompatActivity {
             final Bitmap bitmap;
             bitmap = getBitmapFromUri(data.getData());
 
-            photoView.setImageBitmap(bitmap);
+            int srcWidth = bitmap.getWidth();
+            int srcHeight = bitmap.getHeight();
+            int dstWidth = photoView.getWidth();
+            int dstHeight = photoView.getHeight();
 
+            float xScale = (float) dstWidth / srcWidth;
+            float yScale = (float) dstHeight / srcHeight;
 
+            float scale = Math.min(xScale, yScale);
 
+            float scaledWidth = scale * srcWidth;
+            float scaledHeight = scale * srcHeight;
 
+            Bitmap copyBitmap = Bitmap.createScaledBitmap(bitmap, (int) scaledWidth, (int) scaledHeight, true);
 
+            List<Classifier.Recognition> results = detector.recognizeImage(copyBitmap);
 
+            Canvas canvas = new Canvas(copyBitmap);
+
+            Paint paint = new Paint();
+            paint.setStyle(Paint.Style.STROKE);
+            paint.setStrokeWidth(5);
+
+            int peeledAlmonds = 0, unpeeledAlmonds = 0;
+
+            for (Classifier.Recognition result : results) {
+                RectF location = result.getLocation();
+
+                if (location != null && result.getConfidence() >= 0.9) {
+
+                    if (result.getTitle().equals("peeled")) {
+                        paint.setColor(Color.GREEN);
+                        peeledAlmonds++;
+                    } else {
+                        paint.setColor(Color.RED);
+                        unpeeledAlmonds++;
+                    }
+                    canvas.drawRect(location, paint);
+                }
+            }
+            String peeledText = "Geschählt: " + peeledAlmonds;
+            String unpeeledText = "ungeschählt: " + unpeeledAlmonds;
+            photoView.setImageBitmap(copyBitmap);
+            peeledTextView.setText(peeledText);
+            unpeeledTextView.setText(unpeeledText);
         }
 
 

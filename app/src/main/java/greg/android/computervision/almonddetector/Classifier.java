@@ -108,7 +108,7 @@ public class Classifier {
     }
 
     // Only return this many results.
-    private static final int MAX_RESULTS = 1000 * 10;
+    private static final int MAX_RESULTS = 100 * 10;
 
     // Config values.
     private String inputName;

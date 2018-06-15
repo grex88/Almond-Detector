@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">Mandel-Detector</string>
-    <string name="actoinmenu"></string>
+    <string name="gallery_button">Gallerie</string>
+    <string name="unpeeled_text_view">Ungeschählt : </string>
+    <string name="peeled_text_view">Geschählt : </string>
 </resources>
