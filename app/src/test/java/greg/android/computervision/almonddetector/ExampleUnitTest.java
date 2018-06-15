@@ -1,4 +1,4 @@
-package greg.opencv.greg.almonddetector;
+package greg.android.computervision.almonddetector;
 
 import org.junit.Test;
 
