@@ -1,4 +1,4 @@
-package tutorials.opencv.greg.almond_detector;
+package greg.opencv.greg.almonddetector;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;

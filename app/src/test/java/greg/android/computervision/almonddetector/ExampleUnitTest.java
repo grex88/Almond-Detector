@@ -1,4 +1,4 @@
-package tutorials.opencv.greg.almond_detector;
+package greg.opencv.greg.almonddetector;
 
 import org.junit.Test;
 

@@ -1,4 +1,4 @@
-package tutorials.opencv.greg.almond_detector;
+package greg.opencv.greg.almonddetector;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("tutorials.opencv.greg.almond_detector", appContext.getPackageName());
+        assertEquals("tutorials.opencv.greg.almondDetector", appContext.getPackageName());
     }
 }
