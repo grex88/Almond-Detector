@@ -70,10 +70,30 @@ public class MainActivity extends AppCompatActivity {
         }).start();
     }
 
-    public void openGalery(View view){
+    public void onClick(View view) {
+
+        switch (view.getId()) {
+            case R.id.myGalleryButton:
+                openGalery();
+                break;
+            case R.id.myCameraButton:
+                dispatchTakePictureIntent();
+                break;
+
+        }
+    }
+
+    public void openGalery(){
         Intent myIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 
-        startActivityForResult(myIntent,100);
+        startActivityForResult(myIntent,1);
+    }
+
+    public void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, 2);
+        }
     }
 
     private Bitmap getBitmapFromUri(Uri uri) {
@@ -94,56 +114,61 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK) {
-            final Bitmap bitmap;
+        final Bitmap bitmap;
+        if (requestCode == 1 && resultCode == RESULT_OK) {
             bitmap = getBitmapFromUri(data.getData());
-
-            int srcWidth = bitmap.getWidth();
-            int srcHeight = bitmap.getHeight();
-            int dstWidth = photoView.getWidth();
-            int dstHeight = photoView.getHeight();
-
-            float xScale = (float) dstWidth / srcWidth;
-            float yScale = (float) dstHeight / srcHeight;
-
-            float scale = Math.min(xScale, yScale);
-
-            float scaledWidth = scale * srcWidth;
-            float scaledHeight = scale * srcHeight;
-
-            Bitmap copyBitmap = Bitmap.createScaledBitmap(bitmap, (int) scaledWidth, (int) scaledHeight, true);
-
-            List<Classifier.Recognition> results = detector.recognizeImage(copyBitmap);
-
-            Canvas canvas = new Canvas(copyBitmap);
-
-            Paint paint = new Paint();
-            paint.setStyle(Paint.Style.STROKE);
-            paint.setStrokeWidth(5);
-
-            int peeledAlmonds = 0, unpeeledAlmonds = 0;
-
-            for (Classifier.Recognition result : results) {
-                RectF location = result.getLocation();
-
-                if (location != null && result.getConfidence() >= 0.9) {
-
-                    if (result.getTitle().equals("peeled")) {
-                        paint.setColor(Color.GREEN);
-                        peeledAlmonds++;
-                    } else {
-                        paint.setColor(Color.RED);
-                        unpeeledAlmonds++;
-                    }
-                    canvas.drawRect(location, paint);
-                }
-            }
-            String peeledText = "Geschählt: " + peeledAlmonds;
-            String unpeeledText = "ungeschählt: " + unpeeledAlmonds;
-            photoView.setImageBitmap(copyBitmap);
-            peeledTextView.setText(peeledText);
-            unpeeledTextView.setText(unpeeledText);
         }
+        else if (requestCode == 2 && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            bitmap = (Bitmap) extras.get("data");
+        }else{bitmap = null;}
+
+
+        int srcWidth = bitmap.getWidth();
+        int srcHeight = bitmap.getHeight();
+        int dstWidth = photoView.getWidth();
+        int dstHeight = photoView.getHeight();
+
+        float xScale = (float) dstWidth / srcWidth;
+        float yScale = (float) dstHeight / srcHeight;
+
+        float scale = Math.min(xScale, yScale);
+
+        float scaledWidth = scale * srcWidth;
+        float scaledHeight = scale * srcHeight;
+
+        Bitmap copyBitmap = Bitmap.createScaledBitmap(bitmap, (int) scaledWidth, (int) scaledHeight, true);
+
+        List<Classifier.Recognition> results = detector.recognizeImage(copyBitmap);
+
+        Canvas canvas = new Canvas(copyBitmap);
+
+        Paint paint = new Paint();
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(5);
+
+        int peeledAlmonds = 0, unpeeledAlmonds = 0;
+
+        for (Classifier.Recognition result : results) {
+            RectF location = result.getLocation();
+
+            if (location != null && result.getConfidence() >= 0.9) {
+
+                if (result.getTitle().equals("peeled")) {
+                    paint.setColor(Color.GREEN);
+                    peeledAlmonds++;
+                } else {
+                    paint.setColor(Color.RED);
+                    unpeeledAlmonds++;
+                }
+                canvas.drawRect(location, paint);
+            }
+        }
+        String peeledText = "Geschählt: " + peeledAlmonds;
+        String unpeeledText = "ungeschählt: " + unpeeledAlmonds;
+        photoView.setImageBitmap(copyBitmap);
+        peeledTextView.setText(peeledText);
+        unpeeledTextView.setText(unpeeledText);
 
 
         }

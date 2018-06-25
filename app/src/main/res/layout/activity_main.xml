@@ -16,13 +16,23 @@
         fab:srcCompat="@drawable/ic_launcher_background" />
 
     <Button
+        android:id="@+id/myCameraButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignTop="@+id/myGalleryButton"
+        android:onClick="onClick"
+        android:text="@string/camera_button" />
+
+
+    <Button
         android:id="@+id/myGalleryButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_marginBottom="18dp"
-        android:onClick="openGalery"
+        android:onClick="onClick"
         android:text="@string/gallery_button"
         android:layout_above="@id/myPhotoView"/>
 
@@ -47,5 +57,6 @@
         android:layout_marginBottom="118dp"
         android:background="@android:color/holo_blue_bright"
         android:text="@string/peeled_text_view" />
+
 
 </RelativeLayout>
