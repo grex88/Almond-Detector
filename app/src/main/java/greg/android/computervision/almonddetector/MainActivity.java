@@ -137,6 +137,8 @@ public class MainActivity extends AppCompatActivity {
         float scaledWidth = scale * srcWidth;
         float scaledHeight = scale * srcHeight;
 
+        //List<Classifier.Recognition> results = detector.recognizeImage(bitmap);
+
         Bitmap copyBitmap = Bitmap.createScaledBitmap(bitmap, (int) scaledWidth, (int) scaledHeight, true);
 
         List<Classifier.Recognition> results = detector.recognizeImage(copyBitmap);
@@ -151,6 +153,10 @@ public class MainActivity extends AppCompatActivity {
 
         for (Classifier.Recognition result : results) {
             RectF location = result.getLocation();
+
+            //scaleRactangle(location,scale);
+            //location.offset(100,100);
+
 
             if (location != null && result.getConfidence() >= 0.9) {
 
@@ -172,4 +178,17 @@ public class MainActivity extends AppCompatActivity {
 
 
         }
+
+
+    private void scaleRactangle(RectF rect, float factor){
+        float diffHorizontal = (rect.right-rect.left) * (factor-1f);
+        float diffVertical = (rect.bottom-rect.top) * (factor-1f);
+
+        rect.top -= diffVertical/2f;
+        rect.bottom += diffVertical/2f;
+
+        rect.left -= diffHorizontal/2f;
+        rect.right += diffHorizontal/2f;
+    }
+
 }
