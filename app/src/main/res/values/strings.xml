@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Mandel-Detector</string>
-    <string name="gallery_button">Vorhandenes Bild detektieren</string>
-    <string name="camera_button">Foto-Detektion</string>
+    <string name="gallery_button">Vorhandenes Bild analysieren</string>
+    <string name="camera_button">Foto-Analyse</string>
     <string name="description_text_view">Detektierte Objekte</string>
     <string name="unpeeled_text_view">Ungeschählt : </string>
     <string name="peeled_text_view">Geschählt : </string>

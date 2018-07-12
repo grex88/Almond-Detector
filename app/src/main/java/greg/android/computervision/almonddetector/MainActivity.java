@@ -176,8 +176,8 @@ public class MainActivity extends AppCompatActivity {
                 canvas.drawRect(location, paint);
             }
         }
-        String peeledText = "geschält: " + peeledAlmonds;
-        String unpeeledText = "ungeschählt: " + unpeeledAlmonds;
+        String peeledText = "Geschält:\t " + peeledAlmonds;
+        String unpeeledText = "Ungeschählt:\t " + unpeeledAlmonds;
         photoView.setImageBitmap(copyBitmap);
         peeledTextView.setText(peeledText);
         unpeeledTextView.setText(unpeeledText);
