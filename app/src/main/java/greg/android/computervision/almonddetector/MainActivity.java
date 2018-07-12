@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String LABELS_FILE = "labels.txt";
 
     private Classifier detector;
-    private static final String modelPath = "frozen_inference_graph.pb";
+    private static final String modelPath = "frozen_inference_graph-gross.pb";
 
     private Button openGalleryButton;
     private ImageView photoView;
@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
                 openGalery();
                 break;
             case R.id.myCameraButton:
-                dispatchTakePictureIntent();
+                startCameraApp();
                 break;
 
         }
@@ -85,11 +85,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void openGalery(){
         Intent myIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-
         startActivityForResult(myIntent,1);
     }
 
-    public void dispatchTakePictureIntent() {
+    public void startCameraApp() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             startActivityForResult(takePictureIntent, 2);
@@ -114,15 +113,25 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        final Bitmap bitmap;
+        Bitmap bitmap = null;
         if (requestCode == 1 && resultCode == RESULT_OK) {
             bitmap = getBitmapFromUri(data.getData());
         }
         else if (requestCode == 2 && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
-            bitmap = (Bitmap) extras.get("data");
+            Uri uri = data.getData();
+            try{
+                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                Log.d("bitmap name", String.valueOf(bitmap));
+            }catch (Exception ex){
+                ex.printStackTrace();
+            }
+
         }else{bitmap = null;}
 
+        if (bitmap == null){
+            return;
+        }
 
         int srcWidth = bitmap.getWidth();
         int srcHeight = bitmap.getHeight();
@@ -137,11 +146,10 @@ public class MainActivity extends AppCompatActivity {
         float scaledWidth = scale * srcWidth;
         float scaledHeight = scale * srcHeight;
 
-        //List<Classifier.Recognition> results = detector.recognizeImage(bitmap);
-
         Bitmap copyBitmap = Bitmap.createScaledBitmap(bitmap, (int) scaledWidth, (int) scaledHeight, true);
 
         List<Classifier.Recognition> results = detector.recognizeImage(copyBitmap);
+
 
         Canvas canvas = new Canvas(copyBitmap);
 
@@ -154,11 +162,9 @@ public class MainActivity extends AppCompatActivity {
         for (Classifier.Recognition result : results) {
             RectF location = result.getLocation();
 
-            //scaleRactangle(location,scale);
-            //location.offset(100,100);
 
+            if (location != null && result.getConfidence() >= 0.7) {
 
-            if (location != null && result.getConfidence() >= 0.9) {
 
                 if (result.getTitle().equals("peeled")) {
                     paint.setColor(Color.GREEN);
@@ -170,19 +176,18 @@ public class MainActivity extends AppCompatActivity {
                 canvas.drawRect(location, paint);
             }
         }
-        String peeledText = "Geschählt: " + peeledAlmonds;
+        String peeledText = "geschält: " + peeledAlmonds;
         String unpeeledText = "ungeschählt: " + unpeeledAlmonds;
         photoView.setImageBitmap(copyBitmap);
         peeledTextView.setText(peeledText);
         unpeeledTextView.setText(unpeeledText);
 
-
         }
 
 
-    private void scaleRactangle(RectF rect, float factor){
-        float diffHorizontal = (rect.right-rect.left) * (factor-1f);
-        float diffVertical = (rect.bottom-rect.top) * (factor-1f);
+    private void scaleRectangle(RectF rect, float widthFactor, float heigthFactor){
+        float diffHorizontal = (rect.right-rect.left) * (widthFactor-1f);
+        float diffVertical = (rect.bottom-rect.top) * (heigthFactor-1f);
 
         rect.top -= diffVertical/2f;
         rect.bottom += diffVertical/2f;
@@ -191,4 +196,17 @@ public class MainActivity extends AppCompatActivity {
         rect.right += diffHorizontal/2f;
     }
 
+    private void translateRectangle(RectF rect, float widthFactor, float heigthFactor){
+        float diffHorizontal = (rect.right-rect.left) * (widthFactor-1f);
+        float diffVertical = (rect.bottom-rect.top) * (heigthFactor-1f);
+
+        rect.top -= diffVertical/2f;
+        rect.bottom += diffVertical/2f;
+
+        rect.left -= diffHorizontal/2f;
+        rect.right += diffHorizontal/2f;
+    }
+
+
 }
+
