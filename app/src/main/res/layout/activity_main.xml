@@ -17,47 +17,50 @@
 
     <Button
         android:id="@+id/myCameraButton"
-        android:layout_width="168dp"
-        android:layout_height="wrap_content"
+        android:layout_width="164dp"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        android:layout_alignTop="@+id/myGalleryButton"
+        android:layout_marginBottom="69dp"
+        android:layout_marginStart="12dp"
         android:onClick="onClick"
         android:text="@string/camera_button" />
 
 
     <Button
         android:id="@+id/myGalleryButton"
-        android:layout_width="180dp"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/myPhotoView"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginBottom="18dp"
+        android:layout_width="164dp"
+        android:layout_height="60dp"
+        android:layout_alignStart="@+id/myCameraButton"
+        android:layout_below="@+id/myCameraButton"
+        android:layout_marginTop="-68dp"
         android:onClick="onClick"
         android:text="@string/gallery_button" />
 
     <TextView
         android:id="@+id/myUnpeeledTextView"
-        android:layout_width="148dp"
-        android:layout_height="33dp"
-        android:layout_above="@id/myPhotoView"
-        android:layout_alignParentStart="true"
+        android:layout_width="143dp"
+        android:layout_height="32dp"
+        android:layout_alignStart="@+id/myPeeledTextView"
         android:layout_below="@+id/myPeeledTextView"
-        android:layout_marginBottom="-431dp"
-        android:layout_marginTop="-114dp"
         android:background="@android:color/holo_blue_bright"
         android:text="@string/unpeeled_text_view" />
 
     <TextView
         android:id="@+id/myPeeledTextView"
-        android:layout_width="148dp"
+        android:layout_width="143dp"
         android:layout_height="32dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginBottom="82dp"
-        android:layout_marginEnd="68dp"
+        android:layout_alignStart="@+id/myDiscription"
+        android:layout_below="@+id/myDiscription"
         android:background="@android:color/holo_blue_bright"
         android:text="@string/peeled_text_view" />
 
-
+    <TextView
+        android:id="@+id/myDiscription"
+        android:layout_width="143dp"
+        android:layout_height="44dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/myCameraButton"
+        android:background="@android:color/holo_blue_bright"
+        android:text="@string/description_text_view" />
 </RelativeLayout>
