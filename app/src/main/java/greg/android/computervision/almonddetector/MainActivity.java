@@ -185,28 +185,5 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-    private void scaleRectangle(RectF rect, float widthFactor, float heigthFactor){
-        float diffHorizontal = (rect.right-rect.left) * (widthFactor-1f);
-        float diffVertical = (rect.bottom-rect.top) * (heigthFactor-1f);
-
-        rect.top -= diffVertical/2f;
-        rect.bottom += diffVertical/2f;
-
-        rect.left -= diffHorizontal/2f;
-        rect.right += diffHorizontal/2f;
-    }
-
-    private void translateRectangle(RectF rect, float widthFactor, float heigthFactor){
-        float diffHorizontal = (rect.right-rect.left) * (widthFactor-1f);
-        float diffVertical = (rect.bottom-rect.top) * (heigthFactor-1f);
-
-        rect.top -= diffVertical/2f;
-        rect.bottom += diffVertical/2f;
-
-        rect.left -= diffHorizontal/2f;
-        rect.right += diffHorizontal/2f;
-    }
-
-
 }
 

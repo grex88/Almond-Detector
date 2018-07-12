@@ -10,14 +10,14 @@
     <ImageView
         android:id="@+id/myPhotoView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="374dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         fab:srcCompat="@drawable/ic_launcher_background" />
 
     <Button
         android:id="@+id/myCameraButton"
-        android:layout_width="wrap_content"
+        android:layout_width="168dp"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignTop="@+id/myGalleryButton"
@@ -27,14 +27,14 @@
 
     <Button
         android:id="@+id/myGalleryButton"
-        android:layout_width="wrap_content"
+        android:layout_width="180dp"
         android:layout_height="wrap_content"
+        android:layout_above="@id/myPhotoView"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_marginBottom="18dp"
         android:onClick="onClick"
-        android:text="@string/gallery_button"
-        android:layout_above="@id/myPhotoView"/>
+        android:text="@string/gallery_button" />
 
     <TextView
         android:id="@+id/myUnpeeledTextView"
@@ -53,8 +53,9 @@
         android:layout_width="148dp"
         android:layout_height="32dp"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="118dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="82dp"
+        android:layout_marginEnd="68dp"
         android:background="@android:color/holo_blue_bright"
         android:text="@string/peeled_text_view" />
 
