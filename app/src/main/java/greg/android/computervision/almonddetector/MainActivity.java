@@ -8,14 +8,12 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -26,11 +24,11 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private static final String LABELS_FILE = "labels.txt";
-
-    private Classifier detector;
     private static final String modelPath = "frozen_inference_graph-gross.pb";
 
-    private Button openGalleryButton;
+    private Classifier detector;
+
+
     private ImageView photoView;
     private TextView peeledTextView, unpeeledTextView;
 
@@ -38,8 +36,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        openGalleryButton = findViewById(R.id.myGalleryButton);
         photoView = findViewById(R.id.myPhotoView);
         peeledTextView = findViewById(R.id.myPeeledTextView);
         unpeeledTextView = findViewById(R.id.myUnpeeledTextView);
@@ -49,25 +45,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setModel() {
-        final Snackbar snackBar = Snackbar.make(
-                findViewById(R.id.container),
-                "Initializing...",
-                Snackbar.LENGTH_INDEFINITE);
-        snackBar.show();
 
-        new Thread(() -> {
-            try {
-                if (detector != null) detector.close();
+        try {
+            if (detector != null) detector.close();
 
-                detector = Classifier.create(
-                        getAssets(), modelPath, LABELS_FILE);
-                runOnUiThread(snackBar::dismiss);
+            detector = Classifier.create(
+                    getAssets(), modelPath, LABELS_FILE);
 
-            } catch (Exception e) {
-                Log.e( "Exception!!","Failed to load inference graph" , e);
-                finish();
-            }
-        }).start();
+        } catch (Exception ex) {
+            Log.e("Exception!!", "Failed to load inference graph", ex);
+            finish();
+        }
     }
 
     public void onClick(View view) {
@@ -83,9 +71,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void openGalery(){
+    public void openGalery() {
         Intent myIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(myIntent,1);
+        startActivityForResult(myIntent, 1);
     }
 
     public void startCameraApp() {
@@ -116,23 +104,34 @@ public class MainActivity extends AppCompatActivity {
         Bitmap bitmap = null;
         if (requestCode == 1 && resultCode == RESULT_OK) {
             bitmap = getBitmapFromUri(data.getData());
-        }
-        else if (requestCode == 2 && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
+        } else if (requestCode == 2 && resultCode == RESULT_OK) {
             Uri uri = data.getData();
-            try{
+            try {
                 bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                Log.d("bitmap name", String.valueOf(bitmap));
-            }catch (Exception ex){
+                Log.d("onActivityResult", String.valueOf(bitmap));
+            } catch (Exception ex) {
                 ex.printStackTrace();
             }
 
-        }else{bitmap = null;}
-
-        if (bitmap == null){
+        } else {
+            bitmap = null;
+        }
+        // Return to listening state
+        if (bitmap == null) {
             return;
         }
 
+        // Resize image to fir photo view
+        Bitmap resizedBitmap = resizeBitmap(bitmap);
+        // Detect object
+        List<Classifier.Recognition> results = detector.recognizeImage(resizedBitmap);
+
+        drawResults(resizedBitmap, results);
+
+
+    }
+
+    public Bitmap resizeBitmap(Bitmap bitmap) {
         int srcWidth = bitmap.getWidth();
         int srcHeight = bitmap.getHeight();
         int dstWidth = photoView.getWidth();
@@ -146,12 +145,12 @@ public class MainActivity extends AppCompatActivity {
         float scaledWidth = scale * srcWidth;
         float scaledHeight = scale * srcHeight;
 
-        Bitmap copyBitmap = Bitmap.createScaledBitmap(bitmap, (int) scaledWidth, (int) scaledHeight, true);
+        return Bitmap.createScaledBitmap(bitmap, (int) scaledWidth, (int) scaledHeight, true);
+    }
 
-        List<Classifier.Recognition> results = detector.recognizeImage(copyBitmap);
 
-
-        Canvas canvas = new Canvas(copyBitmap);
+    public void drawResults(Bitmap bitmap, List<Classifier.Recognition> results) {
+        Canvas canvas = new Canvas(bitmap);
 
         Paint paint = new Paint();
         paint.setStyle(Paint.Style.STROKE);
@@ -178,12 +177,11 @@ public class MainActivity extends AppCompatActivity {
         }
         String peeledText = "Geschält:\t " + peeledAlmonds;
         String unpeeledText = "Ungeschählt:\t " + unpeeledAlmonds;
-        photoView.setImageBitmap(copyBitmap);
+        photoView.setImageBitmap(bitmap);
         peeledTextView.setText(peeledText);
         unpeeledTextView.setText(unpeeledText);
 
         }
-
 
 }
 
