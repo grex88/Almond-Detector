@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
             bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor);
             parcelFileDescriptor.close();
         } catch (IOException e) {
-            Log.e("Exception!!", "Failed to get bitmap from uri", e);
+            Log.e("Exception!!", "Failed to get bitmap from  uri", e);
             return null;
         }
         return bitmap;
